@@ -24,6 +24,7 @@ class Graph:
                         if self.is_on_border(y, x):
                             self.island_tmp.is_closed = False
                         self.check_perimeter(y, x)
+                        self.island_tmp.set_base_coorinates()
                         self.islands.append(self.island_tmp)
                         #print(f"Island {self.island_tmp.coord}")
                     else:
@@ -69,8 +70,6 @@ class Graph:
                 self.island_tmp.is_closed = False            
             self.island_tmp.coord.append([y, x])
             self.check_perimeter(y, x, "south")
- #       else:
-            #print("There is water north")
 
     def get_south(self, y, x):
         if y == (self.max_y - 1):
@@ -84,12 +83,8 @@ class Graph:
                 self.island_tmp.is_closed = False            
             self.island_tmp.coord.append([y, x])
             self.check_perimeter(y, x, "north")
-
-#        else:
-            #print("There is water South")   
         
     def get_east(self, y, x):
-        #print(f" {x} vs {self.max_x}")
         if x == (self.max_x - 1):
             #print("Your are at the eastern border")
             return    
@@ -101,9 +96,6 @@ class Graph:
                 self.island_tmp.is_closed = False
             self.island_tmp.coord.append([y, x])
             self.check_perimeter(y, x, "west")
-
-#        else:
-            #print("There is water to the east")
         
     def get_west(self, y, x):
         if x == 0:
@@ -118,21 +110,30 @@ class Graph:
             self.island_tmp.coord.append([y, x])            
             self.check_perimeter(y, x, "east")
 
-        #else:
-            #print("There is water to the west")
-
     def is_on_border(self, y, x):
         if x == 0 or x == self.max_x - 1 or y == 0 or y == self.max_y - 1:
             return True
+
     def islands_found(self):
         closed_counter = 0
-        
         for island in self.islands:
-            #print(island)
-            print(f"Island coordinates: {island.coord} and is closed {island.is_closed}")
+            #print(f"Island coordinates: {island.coord} and is closed {island.is_closed}")
+
             if island.is_closed:
                 closed_counter += 1
-        print(f"Islands found {len(self.islands)}") 
-        print(f"Islands closed {closed_counter}\n\n\n ")
-               
-            
+        self.unique_island()
+        print(f"Islands closed - {closed_counter}\n\n")
+    
+    def unique_island(self):
+        unique_coord = []
+        len_islands = len(self.islands)
+        
+        for i in range(len_islands):
+            if self.islands[i].base_coord not in unique_coord:
+                unique_coord.append(self.islands[i].base_coord)
+        print(f"Islands Found - {len_islands}")
+        print(f"Islands unique - {len(unique_coord)}")
+    
+    def print_2d(self, d_array):
+        print('\n'.join([''.join(['{:4}'.format(item) for item in row]) 
+            for row in d_array]))
